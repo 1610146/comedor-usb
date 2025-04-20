@@ -20,6 +20,7 @@
     "qrcode.react": "^4.2.0"
   },
   "devDependencies": {
+    "@types/node": "^22.14.1",
     "nodemon": "^3.1.9"
   }
 }

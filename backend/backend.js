@@ -8,6 +8,7 @@ const QRCode = require('qrcode');
 const app = express();
 const port = 5500; // Choose your desired port
 const users = require('./routes/api/user');
+const tickets = require('./routes/api/ticket');
 const connectDB = require('./models/db');
 
 // Middleware to parse JSON bodies
@@ -37,7 +38,7 @@ connectDB();
 //Routes
 
 app.use('/api/user',users);
-
+app.use('/api/ticket',tickets);
 //Server
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
