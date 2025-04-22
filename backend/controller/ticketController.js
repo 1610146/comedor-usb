@@ -1,10 +1,13 @@
 const {Ticket,TicketStatusEnum} =  require('../models/ticket');
+const { v4: uuidv4 } = require('uuid');
+
+
 
 
 
 const createTicket = async (req, res) => {
     const newTicket = new Ticket({
-      ticketID: req.body.ticketID,
+      ticketID: uuidv4(),
       ticketType: req.body.ticketType,
       precioTicket: req.body.precioTicket,
       fechaEmision: req.body.fechaEmision,
@@ -46,14 +49,14 @@ const consumeTicket = async (req, res) => {
       const ticketsDisponibles = await Ticket.find({
         estudianteID: estudianteID,
         ticketType: ticketType,
-        ticketStatus: TicketStatusEnum.Disponible, 
+        Status: "Disponible", 
       }).sort({ fechaEmision: 1 });
-
+      console.log(ticketsDisponibles);
       //3. Actializar status del Ticket
   
       if (ticketsDisponibles && ticketsDisponibles.length > 0) {
         const ticketMasAntiguo = ticketsDisponibles[0];
-        ticketMasAntiguo.ticketStatus = TicketStatusEnum.Usado; 
+        ticketMasAntiguo.Status = "Usado"; 
         ticketMasAntiguo.fechaUso = new Date();
         await ticketMasAntiguo.save();
         return res.status(200).json({ message: 'Entrada registrada y ticket más antiguo utilizado.', ticket: ticketMasAntiguo });
