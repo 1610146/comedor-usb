@@ -2,7 +2,8 @@ const QRCode = require('qrcode');
 const User =  require('../models/user');
 const createNewUser  = async  (req, res) => {
     try {
-        const { name, email } = req.body;    
+        const { name, email } = req.body.user;
+        console.log(email);    
         
         if (!name || !email) {
           return res.status(400).json({ message: 'Name and email are required' });

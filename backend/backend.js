@@ -13,6 +13,7 @@ const connectDB = require('./models/db');
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+express.json()
 
 const cors = require("cors")
 
