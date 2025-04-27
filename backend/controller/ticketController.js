@@ -71,14 +71,12 @@ const getAllTickets = async (req, res) => {
     filtros.estudianteID = req.query.estudianteID;
   }
 
-  if(req.query.estudianteID){
-    filtros.estudianteID = req.query.estudianteID;
-  }
   
-  if (req.query.status) {
+  
+  if (req.query.Status) {
     const statusValues = Object.values(TicketStatusEnum);
-    if (statusValues.includes(req.query.status)) {
-      filtros.status = req.query.status;
+    if (statusValues.includes(req.query.Status)) {
+      filtros.Status = req.query.Status;
     }
   }
   //3.Consultar en la base de datos  
@@ -111,16 +109,15 @@ const consumeTicket = async (req, res) => {
     const { estudianteID, ticketType } = req.body;
   
     //1. Validaciones
-    if (!estudianteID || !ticketType) {
-      return res.status(400).json({ message: 'Se requiere estudianteID y ticketType.' });
+    if (!estudianteID ) {
+      return res.status(400).json({ message: 'Se requiere estudianteID.' });
     }
 
     //2. Buscar  si existen tickets disponibles
   
     try {
       const ticketsDisponibles = await Ticket.find({
-        estudianteID: estudianteID,
-        ticketType: ticketType,
+        estudianteID: estudianteID,       
         Status: "Disponible", 
       }).sort({ fechaEmision: 1 });
       console.log(ticketsDisponibles);
@@ -133,7 +130,7 @@ const consumeTicket = async (req, res) => {
         await ticketMasAntiguo.save();
         return res.status(200).json({ message: 'Entrada registrada y ticket más antiguo utilizado.', ticket: ticketMasAntiguo });
       } else {
-        return res.status(404).json({ message: 'No se encontró ningún ticket disponible para este estudiante y tipo.' });
+        return res.status(404).json({ message: 'No se encontró ningún ticket disponible para este estudiante.' });
       }
     } catch (error) {
       console.error('Error al registrar la entrada al comedor:', error);

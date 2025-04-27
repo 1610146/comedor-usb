@@ -6,11 +6,10 @@ const createNewUser  = async  (req, res) => {
   const { name, email,profileImage } = req.body.user;
   if (!name || !email) {
     return res.status(400).json({ message: 'Name and email are required' });
-  }  
+  }   
   //2. Asignar el role de administrador en caso de que aplique 
   var {role} = req.body.user;
-  console.log("ROLE"+role);
-  console.log("req.body.user"+req.body.user);
+ 
   const adminEmailsString = process.env.ADMIN_EMAILS;
   const adminEmailsArray = adminEmailsString ? adminEmailsString.split(',') : [];
         
@@ -38,9 +37,24 @@ const createNewUser  = async  (req, res) => {
     }     
   }
 
-  //4. Guardar el usuario en la base de datos
+  //4.Generar codigo QR del usuario
+ 
+  const qrCode = await QRCode.toDataURL(estudianteID);   
+  
+  //5. Guardar el usuario en la base de datos
+  const newUser = {
+    name: name,
+    email: email,
+    estudianteID: estudianteID,
+    profileImage:profileImage,
+    qrCode:qrCode,
+    role: role
+
+  }
+  
+  
   try{
-    await User.create({ name, email,profileImage,role,estudianteID});
+    await User.create(newUser);
     res.status(201).json({ message: 'User Registered' });
   } catch (error) {
     console.error('Error registering user:', error);
@@ -90,23 +104,24 @@ const getUsers = async (req, res) => {
 }
 
 const generateQR  = async (req, res) => {
-    const { email } = req.query;
-    
-  
+    const { email } = req.query;  
     if (!email) {
       return res.status(400).send('Email parameter is required');
     }
-    QRCode.toDataURL(`QR=${email}`).then(console.log)
-    QRCode.toDataURL(email, (err, qrCodeString) => {
-      if (err) {
-        res.status(500).json({ error: 'Failed to generate QR code' });
-      } else {
-        console.log(qrCodeString) 
-        res.status(200).json({ qrCode: qrCodeString }); 
-      }
-    });    
     
+    try {
+      const user = await User.find({email:email});  
+
+      if(user){
+        res.status(200).json({ qrCode: user[0].qrCode }); 
+      }
+      
+    }catch{
+      res.status(500).json({ error: 'Failed to get QR code' });
+    }
+
   }
+
   
 
 module.exports = {

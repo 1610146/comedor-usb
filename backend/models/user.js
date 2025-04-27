@@ -25,7 +25,8 @@ const userSchema = new mongoose.Schema({
   qrCode: {
     type: String,       
     description: 'Codigo QR en base64 para la identificacion del usuario '
-  },
+  }
+  ,
   becado: {
     type: Boolean,
     default: false,       
