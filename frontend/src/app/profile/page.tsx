@@ -1,4 +1,3 @@
-
 "use client"; 
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
@@ -16,7 +15,7 @@ const QrScannerPage = () => {
           height: 250,
         },
         fps: 5,
-      }, /*verbose=*/  false
+      },   false
     );
 
     function success(result: string) {
@@ -32,7 +31,7 @@ const QrScannerPage = () => {
     scanner.render(success, error);
 
     return () => {
-      // Limpiar el escáner cuando el componente se desmonte
+      console.log('Limpiando el escáner');
       scanner.clear();
     };
   }, []);

@@ -60,6 +60,7 @@ export default function UserInfo() {
         <div>
           Email: <span className="font-bold">{session?.user?.email}</span>
         </div>
+        
       </div>
     );
   } else {

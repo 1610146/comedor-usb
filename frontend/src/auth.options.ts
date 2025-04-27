@@ -45,28 +45,46 @@ const authOptions = {
           await connectMongoDB();
           const userExists = await User.findOne({ email});
 
-          if (!userExists) {
-            const res = await fetch("http://localhost:5500/api/user", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                user
-              }),
-            });
+          
 
-            if (res.ok) {
-              return user;
-            }
+        if (!userExists) {
+          console.log("USER: "+user);
+          const res = await fetch("http://localhost:5500/api/user", {
+          method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user
+            }),
+          });
+
+          if (res.ok) {
+            return user;
           }
-        } catch (error) {
+        }
+        else{user.role = userExists?.role;}          
+        }         
+         catch (error) {
           console.log(error);
         }
       }
 
       return user;
     },
+
+     // If you want to use the role in server components
+    async jwt({ token, user }) {
+      if (user) token.role = user.role
+      return token
+    },
+  // If you want to use the role in client components
+    async session({ session, token }) {
+      if (session?.user) session.user.role = token.role
+      return session
+    },
+
+
   },
 } satisfies AuthOptions;
 

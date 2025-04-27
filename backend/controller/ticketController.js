@@ -29,15 +29,17 @@ const getAllTickets = async (req, res) => {
     //1. Agregar paginacion
     var page=0;
     var limit=0;
-    if(req.query.page){
-      page = req.query.page;
-    }
+    
   
     if(req.query.limit){
-      limit = req.query.limit;
+      limit = parseInt(req.query.limit);
+
+      if(req.query.page){
+        page =  parseInt(req.query.page -1);
+      }
     }
   
-    var offset = (page*limit)-1;
+    var offset = (page*limit);
 
   //2. Agregar filtros según los queries
   
@@ -81,8 +83,24 @@ const getAllTickets = async (req, res) => {
   }
   //3.Consultar en la base de datos  
   try {
-      const tickets = await Ticket.find(filtros).skip(offset).limit(limit);;
-      res.status(200).json(tickets);
+    const totalTickets = await Ticket.countDocuments(filtros);
+    const tickets = await Ticket.find(filtros).skip(offset).limit(limit); 
+    const hasMore=(offset + limit) > totalTickets;
+    
+    
+    res.status(200).json({
+      data: tickets,
+      meta: {
+        totalTickets:totalTickets,
+        limit: limit,
+        offset: offset,
+        hasMore: hasMore
+      }
+  });
+
+    
+   
+      
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
