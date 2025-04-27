@@ -12,12 +12,7 @@ const ticketSchema = new mongoose.Schema({
     required: true,
     unique: true,
     description: 'Identificador único del ticket dentro del sistema'
-  },
-  ticketType: {
-    type: String,
-    enum: ["Desayuno", "Almuerzo", "Cena"],
-    description: 'Tipo de servicio que el ticket representa'
-  },
+  }, 
   precioTicket: {
     type: Number,
     description: 'Precio en moneda local del ticket'

@@ -7,13 +7,13 @@ const { v4: uuidv4 } = require('uuid');
 
 const createTicket = async (req, res) => {
     const newTicket = new Ticket({
-      ticketID: uuidv4(),
-      ticketType: req.body.ticketType,
+      ticketID: uuidv4(),      
       precioTicket: req.body.precioTicket,
       fechaEmision: req.body.fechaEmision,
       fechaUso: req.body.fechaUso,
       ticketStatus: req.body.ticketStatus,
       estudianteID: req.body.estudianteID,
+      Status: req.body.Status
     });
   
     try {
@@ -26,8 +26,62 @@ const createTicket = async (req, res) => {
 
 // GET all tickets
 const getAllTickets = async (req, res) => {
-    try {
-      const tickets = await Ticket.find();
+    //1. Agregar paginacion
+    var page=0;
+    var limit=0;
+    if(req.query.page){
+      page = req.query.page;
+    }
+  
+    if(req.query.limit){
+      limit = req.query.limit;
+    }
+  
+    var offset = (page*limit)-1;
+
+  //2. Agregar filtros según los queries
+  
+  const filtros = {};
+
+  if (req.query.fechaInicio && !req.query.fechaFin ) {
+    filtros.fechaUso = {
+      
+      $gte: new Date(req.query.fechaInicio),
+    };
+  }
+
+  
+  if (req.query.fechaFin && !req.query.fechaInicio) {
+    filtros.fechaUso = {     
+      $lte: new Date(req.query.fechaFin),
+    };
+  }
+
+  if(req.query.fechaInicio && req.query.fechaFin){
+    filtros.fechaUso = {     
+      $gte: new Date(req.query.fechaInicio),
+      $lte: new Date(req.query.fechaFin),
+    };
+
+  }
+
+  if(req.query.estudianteID){
+    filtros.estudianteID = req.query.estudianteID;
+  }
+
+  if(req.query.estudianteID){
+    filtros.estudianteID = req.query.estudianteID;
+  }
+  
+  if (req.query.status) {
+    const statusValues = Object.values(TicketStatusEnum);
+    if (statusValues.includes(req.query.status)) {
+      filtros.status = req.query.status;
+    }
+  }
+  //3.Consultar en la base de datos  
+  try {
+      const tickets = await Ticket.find(filtros).skip(offset).limit(limit);;
       res.status(200).json(tickets);
     } catch (error) {
       res.status(500).json({ message: error.message });
