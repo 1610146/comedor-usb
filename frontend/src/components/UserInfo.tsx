@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import SignInBtn from "./SignInBtn";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 
@@ -33,7 +32,6 @@ export default function UserInfo() {
     fetchImage();
   }, [session?.user?.email, status]);
 
-  if (status === "authenticated") {
     return (
       <div className="shadow-xl p-8 rounded-md flex flex-col gap-3 bg-yellow-200">
         {isLoading ? (
@@ -63,7 +61,4 @@ export default function UserInfo() {
         
       </div>
     );
-  } else {
-    return <SignInBtn />;
-  }
 }
