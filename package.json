@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "frontend": "cd frontend && npm run dev",
-    "backend": "cd backend && node backend.js",
+    "backend": "cd backend && npm run dev",
     "dev": "concurrently -n \"frontend,backend\" -c \"bgBlue,bgyellow\" \"npm run frontend\" \"npm run backend\""
   },
   "keywords": [],
