@@ -1,4 +1,4 @@
-# Development Starting Instructions
+# Instrucciones para Empezar el Desarrollo
 
-* install backend and frontend dependencies with npm o
-* to run this project use npm run dev
+* Instala las dependencias del backend y del frontend con npm i
+* Para ejecutar este proyecto, usa npm run dev.
